@@ -1,1 +1,1 @@
-# unsupervised_interpretable_feature_disentanglement
+# Unsupervised Interpretable Feature Disentanglement
