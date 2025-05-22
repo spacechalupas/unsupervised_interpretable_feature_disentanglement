@@ -254,7 +254,7 @@ class ModifiedLlamaModel(LlamaModel):
                 if output_attentions:
                     all_self_attns += (layer_outputs[1],)
 
-                if output_individual_heads:# and i in layers_to_change.keys(): # TODO: FIX THIS if i need internal head outputs comment this if i need external attention heads, uncomment
+                if output_individual_heads:
                     all_attns_outputs += (layer_outputs[-1],)
                 elif not output_individual_heads and output_attentions:
                     all_attns_outputs += (layer_outputs[-1],)
@@ -443,7 +443,6 @@ class ModifiedLlamaAttention(LlamaAttention):
             o_proj_slices = self.o_proj.weight.split(self.hidden_size // self.config.pretraining_tp, dim=1)
             attn_output = sum([F.linear(attn_output[i], o_proj_slices[i]) for i in range(self.config.pretraining_tp)])
         elif (output_individual_heads or new_heads is not None) and indices_to_change is not None:
-        # elif new_heads is not None:
             dequantized_weights = (self.o_proj.state_dict()["SCB"].unsqueeze(1) * self.o_proj.weight)/127
 
             o_proj_slices2 = dequantized_weights.split(self.hidden_size // 32, dim=1) # 32 is the number of heads
